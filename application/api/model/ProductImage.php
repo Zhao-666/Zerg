@@ -17,6 +17,6 @@ class ProductImage extends BaseModel
 
     public function imgUrl()
     {
-        $this->belongsTo('Image', 'img_id', 'id');
+        return $this->belongsTo('Image', 'img_id', 'id');
     }
 }
