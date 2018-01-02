@@ -49,7 +49,7 @@ class Token
     }
 
     //用户和管理都能访问
-    public static function needPrimaryScope()
+    public static function needExclusiveScope()
     {
         $scope = self::getCurrentTokenVar('scope');
         if ($scope) {
@@ -64,7 +64,7 @@ class Token
     }
 
     //只有管理员才可以访问
-    public static function needExclusiveScope()
+    public static function needPrimaryScope()
     {
         $scope = self::getCurrentTokenVar('scope');
         if ($scope) {

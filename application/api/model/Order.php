@@ -14,5 +14,5 @@ class Order extends BaseModel
     protected $hidden = [
         'update_time', 'user_id', 'delete_time'
     ];
-
+    protected $autoWriteTimestamp = true;
 }

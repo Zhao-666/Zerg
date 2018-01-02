@@ -15,6 +15,7 @@ use app\api\model\Order as OrderModel;
 use app\api\model\OrderProduct as OrderProductModel;
 use app\lib\exception\OrderException;
 use app\lib\exception\UserException;
+use think\Db;
 use think\Exception;
 
 
@@ -47,6 +48,7 @@ class Order
 
     private function createOrder($snap)
     {
+        Db::startTrans();
         try {
             $orderNo = self::makeOrderNo();
             $order = new OrderModel();
@@ -67,12 +69,14 @@ class Order
             }
             $orderProduct = new OrderProductModel();
             $orderProduct->saveAll($this->oProducts);
+            Db::commit();
             return [
                 'order_no' => $orderNo,
                 'order_id' => $orderID,
                 'create_time' => $create_time
             ];
         } catch (Exception $ex) {
+            Db::rollback();
             throw $ex;
         }
     }
@@ -135,7 +139,7 @@ class Order
             $pStatus = $this->getProductsStatus($oProduct['product_id'], $oProduct['count']);
             $status['pass'] = $pStatus['haveStock'];
             $status['orderPrice'] += $pStatus['totalPrice'];
-            $status['totalCount'] += $pStatus['totalCount'];
+            $status['totalCount'] += $pStatus['count'];
             $status['pStatusArray'][] = $pStatus;
         }
         return $status;
