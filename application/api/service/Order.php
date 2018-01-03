@@ -9,6 +9,7 @@
 namespace app\api\service;
 
 
+use app\api\model\OrderProduct;
 use app\api\model\Product;
 use app\api\model\UserAddress;
 use app\api\model\Order as OrderModel;
@@ -127,6 +128,16 @@ class Order
         return $userAddress->toArray();
     }
 
+    public function checkOrderStock($orderID)
+    {
+        $oProducts = OrderProduct::where('order_id', '=', $orderID)
+            ->select();
+        $this->oProducts = $oProducts;
+        $this->products = $this->getProductsByOrder($oProducts);
+        $status = $this->getOrderStatus();
+        return $status;
+    }
+
     private function getOrderStatus()
     {
         $status = [
@@ -163,7 +174,7 @@ class Order
         if ($pIndex == -1) {
             //客户端传递的ID可能不存在
             throw new OrderException([
-                'msg' => 'ID为 ' . $oPID . '商品不存在，创建订单失败'
+                'msg' => 'ID为 ' . $oPID . '的商品不存在，创建订单失败'
             ]);
         } else {
             $product = $this->products[$pIndex];
