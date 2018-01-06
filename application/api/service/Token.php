@@ -48,8 +48,8 @@ class Token
         return $uid;
     }
 
-    //用户和管理都能访问
-    public static function needExclusiveScope()
+    //用户和管理都能访问needPrimaryScope
+    public static function needPrimaryScope()
     {
         $scope = self::getCurrentTokenVar('scope');
         if ($scope) {
@@ -63,12 +63,12 @@ class Token
         }
     }
 
-    //只有管理员才可以访问
-    public static function needPrimaryScope()
+    //只有用户才可以访问
+    public static function needExclusiveScope()
     {
         $scope = self::getCurrentTokenVar('scope');
         if ($scope) {
-            if ($scope == ScopeEnum::Super) {
+            if ($scope == ScopeEnum::User) {
                 return true;
             } else {
                 throw new ForbiddenException();

@@ -32,4 +32,12 @@ class Pay extends BaseController
         $notify = new WxNotify();
         $notify->Handle();
     }
+
+    public function redirectNotify()
+    {
+        $xmlData = file_get_contents('php://input');
+        $result = curl_post_raw(
+            'http://zerg.com/api/v1/pay/notify?XDEBUG_SESSION_START=17742',
+            $xmlData);
+    }
 }
