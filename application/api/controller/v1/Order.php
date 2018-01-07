@@ -10,17 +10,19 @@ namespace app\api\controller\v1;
 
 
 use app\api\controller\BaseController;
+use app\api\validate\IDMustBePositiveInt;
 use app\api\validate\OrderPlace;
 use app\api\service\Token as TokenService;
 use app\api\service\Order as OrderService;
 use app\api\model\Order as OrderModel;
 use app\api\validate\PagingParameter;
+use app\lib\exception\OrderException;
 
 class Order extends BaseController
 {
     protected $beforeActionList = [
         'checkExclusiveScope' => ['only' => 'placeOrder'],
-        'checkPrimaryScope' => ['only' => 'getSummaryByUser']
+        'checkPrimaryScope' => ['only' => 'getDetail, getSummaryByUser']
     ];
 
     public function placeOrder()
@@ -49,5 +51,15 @@ class Order extends BaseController
                 ->toArray(),
             'current_page' => $pagingOrders->getCurrentPage()
         ];
+    }
+
+    public function getDetail($id)
+    {
+        (new IDMustBePositiveInt())->goCheck();
+        $orderDetail = OrderModel::get($id);
+        if (!$orderDetail) {
+            throw new OrderException();
+        }
+        return $orderDetail->hidden(['perpay_id']);
     }
 }
