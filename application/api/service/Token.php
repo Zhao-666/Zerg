@@ -12,6 +12,7 @@ namespace app\api\service;
 use app\lib\enum\ScopeEnum;
 use app\lib\exception\ForbiddenException;
 use app\lib\exception\TokenException;
+use think\Cache;
 use think\Exception;
 
 class Token
@@ -85,6 +86,16 @@ class Token
         }
         $currentOperateUID = self::getCurrentUid();
         if ($currentOperateUID == $checkedUID) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function verifyToken($token)
+    {
+        $exist = Cache::get($token);
+        if ($exist) {
             return true;
         } else {
             return false;

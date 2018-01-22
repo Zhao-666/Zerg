@@ -30,7 +30,7 @@ Route::group('api/:version/product', function () {
 Route::get('api/:version/category/all', 'api/:version.Category/getAllCategories');
 
 Route::post('api/:version/token/user', 'api/:version.Token/getToken');
-
+Route::get('api/:version/token/verify', 'api/:version.Token/verifyToken');
 
 Route::post('api/:version/address', 'api/:version.Address/createOrUpdateAddress');
 
