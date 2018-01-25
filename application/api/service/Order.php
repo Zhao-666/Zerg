@@ -150,7 +150,7 @@ class Order
             $pStatus = $this->getProductsStatus($oProduct['product_id'], $oProduct['count']);
             $status['pass'] = $pStatus['haveStock'];
             $status['orderPrice'] += $pStatus['totalPrice'];
-            $status['totalCount'] += $pStatus['count'];
+            $status['totalCount'] += $pStatus['counts'];
             $status['pStatusArray'][] = $pStatus;
         }
         return $status;
@@ -162,9 +162,11 @@ class Order
         $pStatus = [
             'id' => null,
             'haveStock' => false,
-            'count' => 0,
+            'counts' => 0,
+            'price'=>0,
             'name' => '',
-            'totalPrice' => 0
+            'totalPrice' => 0,
+            'main_img_url'=>null
         ];
         for ($i = 0; $i < count($this->products); $i++) {
             if ($oPID == $this->products[$i]['id']) {
@@ -180,7 +182,9 @@ class Order
             $product = $this->products[$pIndex];
             $pStatus['id'] = $product['id'];
             $pStatus['name'] = $product['name'];
-            $pStatus['count'] = $oCount;
+            $pStatus['price'] = $product['price'];
+            $pStatus['main_img_url'] = $product['main_img_url'];
+            $pStatus['counts'] = $oCount;
             $pStatus['totalPrice'] = $product['price'] * $oCount;
             $pStatus['haveStock'] = $product['stock'] >= $oCount;
         }
