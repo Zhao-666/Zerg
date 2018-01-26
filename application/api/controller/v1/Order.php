@@ -17,6 +17,7 @@ use app\api\service\Order as OrderService;
 use app\api\model\Order as OrderModel;
 use app\api\validate\PagingParameter;
 use app\lib\exception\OrderException;
+use app\lib\exception\SuccessException;
 
 class Order extends BaseController
 {
@@ -35,6 +36,15 @@ class Order extends BaseController
         return $status;
     }
 
+    public function delivery($id){
+        (new IDMustBePositiveInt())->goCheck();
+        $order = new OrderService();
+        $success = $order->delivery($id);
+        if ($success){
+            return new SuccessException();
+        }
+    }
+
     public function getSummaryByUser($page = 1, $size = 15)
     {
         (new PagingParameter())->goCheck();
@@ -50,6 +60,22 @@ class Order extends BaseController
             'data' => $pagingOrders->hidden(['snap_items', 'snap_address', 'prepay_id'])
                 ->toArray(),
             'current_page' => $pagingOrders->getCurrentPage()
+        ];
+    }
+
+    public function getSummary($page = 1, $size = 15){
+        (new PagingParameter())->goCheck();
+        $pagingOrders = OrderModel::getSummaryByPage($page,$size);
+        if ($pagingOrders->isEmpty()){
+            return [
+                'data'=>[],
+                'current_page'=>$pagingOrders->getCurrentPage()
+            ];
+        }
+        return [
+            'data'=>$pagingOrders->hidden(['snap_items', 'snap_address'])
+            ->toArray(),
+            'current_page'=>$pagingOrders->getCurrentPage()
         ];
     }
 
