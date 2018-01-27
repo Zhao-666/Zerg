@@ -36,11 +36,12 @@ class Order extends BaseController
         return $status;
     }
 
-    public function delivery($id){
+    public function delivery($id)
+    {
         (new IDMustBePositiveInt())->goCheck();
         $order = new OrderService();
         $success = $order->delivery($id);
-        if ($success){
+        if ($success) {
             return new SuccessException();
         }
     }
@@ -63,19 +64,20 @@ class Order extends BaseController
         ];
     }
 
-    public function getSummary($page = 1, $size = 15){
+    public function getSummary($page = 1, $size = 15)
+    {
         (new PagingParameter())->goCheck();
-        $pagingOrders = OrderModel::getSummaryByPage($page,$size);
-        if ($pagingOrders->isEmpty()){
+        $pagingOrders = OrderModel::getSummaryByPage($page, $size);
+        if ($pagingOrders->isEmpty()) {
             return [
-                'data'=>[],
-                'current_page'=>$pagingOrders->getCurrentPage()
+                'data' => [],
+                'current_page' => $pagingOrders->getCurrentPage()
             ];
         }
         return [
-            'data'=>$pagingOrders->hidden(['snap_items', 'snap_address'])
-            ->toArray(),
-            'current_page'=>$pagingOrders->getCurrentPage()
+            'data' => $pagingOrders->hidden(['snap_items', 'snap_address'])
+                ->toArray(),
+            'current_page' => $pagingOrders->getCurrentPage()
         ];
     }
 
