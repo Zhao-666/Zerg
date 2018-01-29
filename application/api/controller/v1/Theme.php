@@ -23,7 +23,7 @@ class Theme
         if ($result->isEmpty()) {
             throw new ThemeException();
         }
-        return $result;
+        return $result->toArray();
     }
 
     /**
